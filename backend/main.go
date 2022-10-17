@@ -7,7 +7,7 @@ import (
 
 func main() {
 	appl := app.InitializedApp()
-	app.InitializedPusher()
+	// app.InitializedPusher()
 	// Start App
 	err := appl.Listen(":3000")
 	exception.PanicIfNeeded(err)
