@@ -25,13 +25,16 @@ func InitializedApp() *fiber.App {
 	// Setup Controller
 	userController := controller.NewUserControllerImpl(userService)
 
+	messageRepository := repository.NewMessageRepositoryImpl(database)
+	messageService := service.NewMessageRepositoryImpl(messageRepository)
+	messageController := controller.NewMessageControllerImpl(messageService)
 	// Setup Fiber
 	// app := fiber.New(config.NewFiberConfig())
 	app := fiber.New(config.NewFiberConfig())
 	app.Use(recover.New())
 
 	// Setup Routing
-	routes.Route(app, userController)
+	routes.Route(app, userController, messageController)
 	return app
 
 }
