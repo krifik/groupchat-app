@@ -10,5 +10,6 @@ func RegisterEntities() []Entity {
 	return []Entity{
 		{Entity: entity.User{}},
 		{Entity: entity.Product{}},
+		{Entity: entity.Message{}},
 	}
 }
