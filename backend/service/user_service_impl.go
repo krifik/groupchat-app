@@ -1,7 +1,6 @@
 package service
 
 import (
-	"mangojek-backend/entity"
 	"mangojek-backend/model"
 	"mangojek-backend/repository"
 	"mangojek-backend/validation"
@@ -34,15 +33,15 @@ func (service *UserServiceImpl) FindAll() ([]model.GetUserResponse, error) {
 
 func (service *UserServiceImpl) Register(request model.CreateUserRequest) (response model.CreateUserResponse, err error) {
 	validation.Validate(request)
-	user := entity.User{
-		Name:     request.Name,
-		Email:    request.Email,
-		Password: request.Password,
-	}
+	// user := entity.User{
+	// 	Name:     request.Name,
+	// 	Email:    request.Email,
+	// 	Password: request.Password,
+	// }
 
 	result := service.UserRepository.CheckEmail(request)
 	validation.IsEmailHasBeenTaken(result)
-	user, _ = service.UserRepository.Register(request)
+	user, _ := service.UserRepository.Register(request)
 	response = model.CreateUserResponse{
 		Id:       int(user.ID),
 		Name:     user.Name,
@@ -63,8 +62,4 @@ func (service *UserServiceImpl) Login(request model.CreateUserRequest) (response
 		Password: user.Password,
 	}
 	return response, err
-}
-
-func (service *UserServiceImpl) TestRawSQL() {
-	service.UserRepository.TestRawSQL()
 }

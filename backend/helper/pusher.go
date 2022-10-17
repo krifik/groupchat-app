@@ -1,4 +1,4 @@
-package app
+package helper
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 	"github.com/pusher/pusher-http-go"
 )
 
-func InitializedPusher() {
+func NewPusherClient() pusher.Client {
 	pusherClient := pusher.Client{
 		AppID:   os.Getenv("PUSHER_APP_ID"),
 		Key:     os.Getenv("PUSHER_KEY"),
@@ -17,4 +17,5 @@ func InitializedPusher() {
 
 	data := map[string]string{"message": "hello world"}
 	pusherClient.Trigger("groupchat-channel", "message", data)
+	return pusherClient
 }

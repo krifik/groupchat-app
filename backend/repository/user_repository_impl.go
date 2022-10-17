@@ -2,13 +2,13 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 	"mangojek-backend/config"
 	"mangojek-backend/entity"
 	"mangojek-backend/exception"
 	"mangojek-backend/helper"
 	"mangojek-backend/model"
 
+	"github.com/k0kubun/pp"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -26,12 +26,11 @@ func (repository *UserRepositoryImpl) FindAll() ([]entity.User, error) {
 	defer cancel()
 
 	var users []entity.User
-	result := repository.DB.WithContext(ctx).Find(&users)
-
+	result := repository.DB.WithContext(ctx).Preload("Messages").Find(&users)
+	pp.Print(users)
 	if result.RowsAffected < 0 {
 		return nil, errors.New("User not found")
 	}
-	// fmt.Println("repository", items)
 
 	return users, nil
 }
@@ -73,33 +72,6 @@ func (repository *UserRepositoryImpl) Login(request model.CreateUserRequest) (us
 func (repository *UserRepositoryImpl) CheckEmail(request model.CreateUserRequest) (result int64) {
 	ctx, cancel := config.NewPostgresContext()
 	defer cancel()
-	result = repository.DB.WithContext(ctx).First(&entity.User{}, "email=?", request.Email).RowsAffected
+	result = repository.DB.WithContext(ctx).Where("email=?", request.Email).First(&entity.User{}).RowsAffected
 	return result
-}
-func (repository *UserRepositoryImpl) TestRawSQL() {
-	ctx, cancel := config.NewPostgresContext()
-	defer cancel()
-	payload := struct {
-		Name     string
-		Email    string
-		Password string
-	}{
-		Name:     "fikri",
-		Email:    "fikri@gmail.com",
-		Password: "password",
-	}
-	sql := fmt.Sprintf("INSERT INTO users(name,email,password) VALUES('%s', '%s', '%s')", payload.Name, payload.Email, payload.Password)
-	fmt.Println(sql)
-	repository.DB.WithContext(ctx).Create(&entity.User{
-		Name:     "fikri",
-		Email:    "fikri@gmail.com",
-		Password: "password",
-	})
-	// exception.PanicIfNeeded(err)
-	// id, err := result.LastInsertId()
-	// exception.PanicIfNeeded(err)
-	// user := entity.User{
-	// 	ID
-	// }
-	// return result
 }
