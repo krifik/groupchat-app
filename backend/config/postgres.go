@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"mangojek-backend/exception"
 	"strconv"
@@ -23,13 +24,18 @@ func NewPostgresDatabase(configuration Config) *gorm.DB {
 	exception.PanicIfNeeded(err)
 	postgresMaxIdleTime, err := strconv.Atoi(configuration.Get("POSTGRES_MAX_IDLE_TIME_SECOND"))
 	exception.PanicIfNeeded(err)
-	dsn := "host=localhost user=postgres password=fikri dbname=mangojek_db port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+	postgresDBName := configuration.Get("POSTGRES_DBNAME")
+	postgresPort := configuration.Get("POSTGRES_PORT")
+	postgresPass := configuration.Get("POSTGRES_PASS")
+	postgresHost := configuration.Get("POSTGRES_HOST")
+	postgresUser := configuration.Get("POSTGRES_USER")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", postgresHost, postgresUser, postgresPass, postgresDBName, postgresPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		// disable log mode
 		// Logger: logger.Default.LogMode(logger.Silent),
 
 		// skip default transaction
-		// SkipDefaultTransaction: true,
+		SkipDefaultTransaction: true,
 	})
 	exception.PanicIfNeeded(err)
 	sqlDB, err := db.DB()
