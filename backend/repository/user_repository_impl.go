@@ -8,7 +8,6 @@ import (
 	"mangojek-backend/helper"
 	"mangojek-backend/model"
 
-	"github.com/k0kubun/pp"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -27,7 +26,6 @@ func (repository *UserRepositoryImpl) FindAll() ([]entity.User, error) {
 
 	var users []entity.User
 	result := repository.DB.WithContext(ctx).Preload("Messages").Find(&users)
-	pp.Print(users)
 	if result.RowsAffected < 0 {
 		return nil, errors.New("User not found")
 	}
