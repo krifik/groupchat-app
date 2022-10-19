@@ -13,6 +13,10 @@ type CreateMessageRequest struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
+	User      struct {
+		Name  string
+		Email string
+	} `json:"user"`
 }
 
 type CreateMessageResponse struct {
@@ -22,6 +26,10 @@ type CreateMessageResponse struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
+	User      struct {
+		Name  string
+		Email string
+	} `json:"user"`
 }
 
 type GetMessageResponse struct {
@@ -31,4 +39,8 @@ type GetMessageResponse struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
+	User      struct {
+		Name  string
+		Email string
+	} `json:"user"`
 }
