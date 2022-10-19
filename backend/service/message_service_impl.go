@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"mangojek-backend/entity"
 	"mangojek-backend/model"
 	"mangojek-backend/repository"
@@ -22,7 +21,6 @@ func (service *MessageServiceImpl) SendMessage(request model.CreateMessageReques
 		Content: request.Content,
 	}
 	service.MessageRepository.SendMessage(&message)
-	fmt.Println(message)
 	response = model.CreateMessageResponse{
 		Id:        int(message.ID),
 		UserID:    message.UserID,
@@ -35,16 +33,18 @@ func (service *MessageServiceImpl) SendMessage(request model.CreateMessageReques
 }
 
 func (service *MessageServiceImpl) GetMessages() (responses []model.GetMessageResponse) {
-	messages := service.MessageRepository.GetMessages()
-	for _, message := range messages {
+	createMessageResponse := service.MessageRepository.GetMessages()
+	for _, message := range createMessageResponse {
 		responses = append(responses, model.GetMessageResponse{
-			Id:        int(message.ID),
+			Id:        int(message.Id),
 			UserID:    message.UserID,
 			Content:   message.Content,
 			CreatedAt: message.CreatedAt,
 			UpdatedAt: message.UpdatedAt,
 			DeletedAt: message.DeletedAt,
+			User:      message.User,
 		})
 	}
+	// pp.prin(responses)
 	return responses
 }
