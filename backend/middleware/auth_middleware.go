@@ -3,13 +3,16 @@ package middleware
 import (
 	"mangojek-backend/exception"
 	"mangojek-backend/helper"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func AuthMiddleware(c *fiber.Ctx) error {
-	token := c.Get("token")
+	token := c.Get("Authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+	// fmt.Println(token)
 	if token == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "UNAUTENTICATE",
