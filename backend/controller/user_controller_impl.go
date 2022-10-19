@@ -47,7 +47,9 @@ func (controller *UserControllerImpl) Login(c *fiber.Ctx) error {
 	response, err := controller.UserService.Login(request)
 	if err != nil {
 		return c.Status(401).JSON(fiber.Map{
-			"message": "Wrong credential",
+			"code":   401,
+			"status": "BAD REQUEST",
+			"data":   "Wrong credential",
 		})
 	}
 
