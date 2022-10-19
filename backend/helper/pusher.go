@@ -15,7 +15,5 @@ func NewPusherClient() pusher.Client {
 		Secure:  true,
 	}
 
-	data := map[string]string{"message": "hello world"}
-	pusherClient.Trigger("groupchat-channel", "message", data)
 	return pusherClient
 }
