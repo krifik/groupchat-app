@@ -4,6 +4,7 @@ import (
 	"mangojek-backend/config"
 	"mangojek-backend/entity"
 	"mangojek-backend/exception"
+	"mangojek-backend/model"
 
 	"gorm.io/gorm"
 )
@@ -16,12 +17,20 @@ func NewMessageRepositoryImpl(db *gorm.DB) MessageRepository {
 	return &MessageRepositoryImpl{DB: db}
 }
 
-func (repository *MessageRepositoryImpl) GetMessages() (messages []entity.Message) {
+func (repository *MessageRepositoryImpl) GetMessages() (createMessageResponse []model.CreateMessageResponse) {
 	ctx, cancel := config.NewPostgresContext()
 	defer cancel()
-	err := repository.DB.WithContext(ctx).Find(&messages)
-	exception.PanicIfNeeded(err.Error)
-	return messages
+	rows, err := repository.DB.WithContext(ctx).Model(&entity.User{}).Select("messages.*, users.name, users.email").Joins("left join messages on messages.user_id = users.id").Rows()
+	exception.PanicIfNeeded(err)
+	defer rows.Close()
+	for rows.Next() {
+		result := model.CreateMessageResponse{}
+		err := rows.Scan(&result.Id, &result.CreatedAt, &result.UpdatedAt, &result.DeletedAt, &result.UserID, &result.Content, &result.User.Name, &result.User.Email)
+		exception.PanicIfNeeded(err)
+
+		createMessageResponse = append(createMessageResponse, result)
+	}
+	return createMessageResponse
 }
 func (repository *MessageRepositoryImpl) SendMessage(message *entity.Message) {
 	ctx, cancel := config.NewPostgresContext()
