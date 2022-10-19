@@ -26,6 +26,7 @@ func (service *UserServiceImpl) FindAll() ([]model.GetUserResponse, error) {
 			CreatedAt: user.CreatedAt,
 			UpdatedAt: user.UpdatedAt,
 			DeletedAt: user.DeletedAt,
+			Messages:  user.Messages,
 		})
 	}
 	return responses, nil
