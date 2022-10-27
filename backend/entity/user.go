@@ -9,5 +9,6 @@ type User struct {
 	Name     string `gorm:"size:256"`
 	Email    string `gorm:"size:256"`
 	Password string `gorm:"size:256"`
+	Image    string `gorm:"size:256"`
 	Messages []Message
 }
