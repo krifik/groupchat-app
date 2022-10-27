@@ -1,9 +1,15 @@
 package service
 
 import (
+	"encoding/base64"
+	"mangojek-backend/exception"
 	"mangojek-backend/model"
 	"mangojek-backend/repository"
 	"mangojek-backend/validation"
+	"math/rand"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type UserServiceImpl struct {
@@ -34,20 +40,29 @@ func (service *UserServiceImpl) FindAll() ([]model.GetUserResponse, error) {
 
 func (service *UserServiceImpl) Register(request model.CreateUserRequest) (response model.CreateUserResponse, err error) {
 	validation.Validate(request)
-	// user := entity.User{
-	// 	Name:     request.Name,
-	// 	Email:    request.Email,
-	// 	Password: request.Password,
-	// }
-
 	result := service.UserRepository.CheckEmail(request)
 	validation.IsEmailHasBeenTaken(result)
+	decodedImage, err := base64.StdEncoding.DecodeString(request.Image[strings.IndexByte(request.Image, ',')+1:])
+	exception.PanicIfNeeded(err)
+	filename := strconv.Itoa(rand.Intn(100000)) + ".png"
+	f, err := os.Create("app/storage/" + filename)
+	exception.PanicIfNeeded(err)
+	defer f.Close()
+	request.Image = filename
+	if _, err := f.Write(decodedImage); err != nil {
+		panic(err)
+	}
+	if err := f.Sync(); err != nil {
+		panic(err)
+	}
+
 	user, _ := service.UserRepository.Register(request)
 	response = model.CreateUserResponse{
 		Id:       int(user.ID),
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Image:    user.Image,
 	}
 	return response, err
 }
@@ -55,12 +70,24 @@ func (service *UserServiceImpl) Register(request model.CreateUserRequest) (respo
 func (service *UserServiceImpl) Login(request model.CreateUserRequest) (response model.CreateUserResponse, err error) {
 	validation.AuthValidate(request)
 	user, err := service.UserRepository.Login(request)
-
 	response = model.CreateUserResponse{
-		// Id:       user.Id,
+		Id:       int(user.ID),
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Image:    user.Image,
 	}
+
 	return response, err
+}
+
+func (service *UserServiceImpl) GetUser(token string) (response model.GetUserResponse) {
+	user := service.UserRepository.GetUser(token)
+	response = model.GetUserResponse{
+		Id:    int(user.Id),
+		Name:  user.Name,
+		Email: user.Email,
+		Image: user.Image,
+	}
+	return response
 }
