@@ -16,6 +16,7 @@ type CreateMessageRequest struct {
 	User      struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Image string `json:"image"`
 	} `json:"user"`
 }
 
@@ -29,6 +30,7 @@ type CreateMessageResponse struct {
 	User      struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Image string `json:"image"`
 	} `json:"user"`
 }
 
@@ -42,5 +44,6 @@ type GetMessageResponse struct {
 	User      struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Image string `json:"image"`
 	} `json:"user"`
 }
