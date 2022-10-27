@@ -33,6 +33,13 @@ func (controller *MessageControllerImpl) SendMessage(c *fiber.Ctx) error {
 
 func (controller *MessageControllerImpl) GetMessages(c *fiber.Ctx) error {
 	responses := controller.MessageService.GetMessages()
+	if responses == nil {
+		return c.Status(404).JSON(fiber.Map{
+			"code":   404,
+			"status": "NOT FOUND",
+			"data":   []string{},
+		})
+	}
 	return c.JSON(model.WebResponse{
 		Code:   200,
 		Status: "OK",
