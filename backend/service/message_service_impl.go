@@ -28,6 +28,7 @@ func (service *MessageServiceImpl) SendMessage(request model.CreateMessageReques
 		CreatedAt: message.CreatedAt,
 		UpdatedAt: message.UpdatedAt,
 		DeletedAt: message.DeletedAt,
+		User:      request.User,
 	}
 	return response
 }
@@ -45,6 +46,5 @@ func (service *MessageServiceImpl) GetMessages() (responses []model.GetMessageRe
 			User:      message.User,
 		})
 	}
-	// pp.prin(responses)
 	return responses
 }
