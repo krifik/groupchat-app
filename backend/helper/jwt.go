@@ -7,7 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var secretKey = "SANGAT_RAHASIA"
+var secretKey = "VERY_SECRET"
 
 func GenerateJWT(claims *jwt.MapClaims) (string, error) {
 	var mySigningKey = []byte(secretKey)
