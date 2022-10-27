@@ -5,6 +5,7 @@ import (
 	"mangojek-backend/helper"
 	"mangojek-backend/model"
 	"mangojek-backend/service"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -54,13 +55,26 @@ func (controller *UserControllerImpl) Login(c *fiber.Ctx) error {
 	}
 
 	claims := jwt.MapClaims{}
+	claims["id"] = response.Id
 	claims["name"] = response.Name
 	claims["email"] = response.Email
-	claims["expired_at"] = time.Now().Add(60 * time.Minute).Unix()
+	claims["image"] = response.Image
+	claims["expired_at"] = time.Now().Add(72 * time.Hour).Unix()
 	token, err := helper.GenerateJWT(&claims)
 	exception.PanicIfNeeded(err)
 
 	return c.Status(200).JSON(fiber.Map{
 		"token": token,
+	})
+}
+
+func (controller *UserControllerImpl) GetUser(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+	user := controller.UserService.GetUser(token)
+	return c.Status(200).JSON(model.WebResponse{
+		Code:   200,
+		Status: "OK",
+		Data:   user,
 	})
 }
