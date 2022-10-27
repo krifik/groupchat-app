@@ -20,12 +20,12 @@ func NewMessageRepositoryImpl(db *gorm.DB) MessageRepository {
 func (repository *MessageRepositoryImpl) GetMessages() (createMessageResponse []model.CreateMessageResponse) {
 	ctx, cancel := config.NewPostgresContext()
 	defer cancel()
-	rows, err := repository.DB.WithContext(ctx).Model(&entity.User{}).Select("messages.*, users.name, users.email").Joins("left join messages on messages.user_id = users.id").Rows()
+	rows, err := repository.DB.WithContext(ctx).Omit("messages.*").Model(&entity.User{}).Select("messages.*, users.name, users.email, users.image").Joins("right join messages on messages.user_id = users.id").Rows()
 	exception.PanicIfNeeded(err)
 	defer rows.Close()
 	for rows.Next() {
 		result := model.CreateMessageResponse{}
-		err := rows.Scan(&result.Id, &result.CreatedAt, &result.UpdatedAt, &result.DeletedAt, &result.UserID, &result.Content, &result.User.Name, &result.User.Email)
+		err := rows.Scan(&result.Id, &result.CreatedAt, &result.UpdatedAt, &result.DeletedAt, &result.UserID, &result.Content, &result.User.Name, &result.User.Email, &result.User.Image)
 		exception.PanicIfNeeded(err)
 
 		createMessageResponse = append(createMessageResponse, result)
