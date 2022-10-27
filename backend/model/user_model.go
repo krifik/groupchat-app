@@ -13,6 +13,7 @@ type CreateUserRequest struct {
 	Name      string           `json:"name"`
 	Email     string           `json:"email"`
 	Password  string           `json:"password"`
+	Image     string           `json:"image"`
 	CreatedAt time.Time        `json:"created_at"`
 	UpdatedAt time.Time        `json:"updated_at"`
 	DeletedAt gorm.DeletedAt   `json:"deleted_at"`
@@ -25,6 +26,7 @@ type CreateUserResponse struct {
 	Name      string           `json:"name"`
 	Email     string           `json:"email"`
 	Password  string           `json:"-"`
+	Image     string           `json:"image"`
 	CreatedAt time.Time        `json:"created_at"`
 	UpdatedAt time.Time        `json:"updated_at"`
 	DeletedAt gorm.DeletedAt   `json:"deleted_at"`
@@ -37,6 +39,7 @@ type GetUserResponse struct {
 	Name      string           `json:"name"`
 	Email     string           `json:"email"`
 	Password  string           `json:"-"`
+	Image     string           `json:"image"`
 	CreatedAt time.Time        `json:"created_at"`
 	UpdatedAt time.Time        `json:"updated_at"`
 	DeletedAt gorm.DeletedAt   `json:"deleted_at"`

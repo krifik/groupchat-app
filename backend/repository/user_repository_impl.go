@@ -47,6 +47,7 @@ func (repository *UserRepositoryImpl) Register(request model.CreateUserRequest) 
 		Name:     request.Name,
 		Email:    request.Email,
 		Password: request.Password,
+		Image:    request.Image,
 	}
 	result := repository.DB.WithContext(ctx).Create(&user)
 	exception.PanicIfNeeded(result.Error)
@@ -72,4 +73,15 @@ func (repository *UserRepositoryImpl) CheckEmail(request model.CreateUserRequest
 	defer cancel()
 	result = repository.DB.WithContext(ctx).Where("email=?", request.Email).First(&entity.User{}).RowsAffected
 	return result
+}
+func (repository *UserRepositoryImpl) GetUser(token string) (user model.CreateUserResponse) {
+	claims, err := helper.DecodeToken(token)
+	exception.PanicIfNeeded(err)
+	user = model.CreateUserResponse{
+		Id:    int(claims["id"].(float64)),
+		Name:  claims["name"].(string),
+		Email: claims["email"].(string),
+		Image: claims["image"].(string),
+	}
+	return user
 }
